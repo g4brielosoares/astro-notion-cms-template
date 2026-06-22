@@ -1,0 +1,38 @@
+---
+import HeaderLink from "@/components/layout/HeaderLink.astro";
+
+type Link = {
+  name: string;
+  href: string;
+};
+
+const links: Link[] = [
+  {
+    name: "Início",
+    href: "/",
+  },
+  {
+    name: "Blog",
+    href: "/blog",
+  },
+];
+---
+
+<header class="border-b border-zinc-200 bg-white">
+  <nav class="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
+    <a
+      href="/"
+      class="font-semibold tracking-tight"
+      data-astro-prefetch="hover"
+    >
+      ASTRO + NOTION CMS
+    </a>
+    <div class="flex items-center gap-4">
+      {
+        links.map((link) => (
+          <HeaderLink href={link.href}>{link.name}</HeaderLink>
+        ))
+      }
+    </div>
+  </nav>
+</header>

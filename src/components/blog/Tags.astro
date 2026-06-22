@@ -1,0 +1,35 @@
+---
+import { getTagPath, getTagSlug } from "@/utils/blog";
+
+interface Props {
+  tags: string[];
+  class?: string;
+  activeTag?: string;
+}
+
+const { tags, class: className, activeTag } = Astro.props;
+const activeTagSlug = activeTag ? getTagSlug(activeTag) : null;
+---
+
+{
+  tags.length > 0 && (
+    <div class:list={["flex flex-wrap gap-2", className]}>
+      {tags.map((tag) => (
+        <a
+          href={getTagPath(tag)}
+          rel="tag"
+          data-astro-prefetch="tap"
+          aria-current={activeTagSlug === getTagSlug(tag) ? "page" : undefined}
+          class:list={[
+            "rounded-full border px-3 py-1 text-sm transition-colors",
+            activeTagSlug === getTagSlug(tag)
+              ? "border-zinc-950 bg-zinc-950 text-white"
+              : "border-zinc-200 bg-zinc-50 text-zinc-600 hover:border-zinc-300 hover:text-zinc-950",
+          ]}
+        >
+          {tag}
+        </a>
+      ))}
+    </div>
+  )
+}

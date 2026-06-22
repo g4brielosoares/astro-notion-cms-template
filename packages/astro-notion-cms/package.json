@@ -1,0 +1,24 @@
+{
+  "name": "@local/astro-notion-cms",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "Generic Notion datasource sync helpers for Astro content collections.",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "bin": {
+    "astro-notion-cms": "./bin/astro-notion-cms.js"
+  },
+  "types": "./src/index.d.ts",
+  "dependencies": {
+    "@notionhq/client": "^5.12.0",
+    "dotenv": "^17.3.1",
+    "notion-to-md": "^3.1.9",
+    "slugify": "^1.6.6",
+    "yaml": "^2.8.1"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  }
+}

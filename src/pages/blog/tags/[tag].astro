@@ -1,0 +1,26 @@
+---
+import type { TagArchive } from "@/utils/blog";
+import PostListingPage from "@/components/blog/PostListingPage.astro";
+import { getPublishedPosts, getTagArchives } from "@/utils/blog";
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  const tags = getTagArchives(posts);
+
+  return tags.map((tag) => ({
+    params: { tag: tag.slug },
+    props: { tag },
+  }));
+}
+
+const { tag } = Astro.props as { tag: TagArchive };
+---
+
+<PostListingPage
+  title={tag.name}
+  description={`Posts marcados com a tag ${tag.name}.`}
+  heading={`Tag: ${tag.name}`}
+  intro={`${tag.posts.length} post${tag.posts.length === 1 ? "" : "s"} encontrado${tag.posts.length === 1 ? "" : "s"}`}
+  activeTag={tag.name}
+  posts={tag.posts}
+/>

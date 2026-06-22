@@ -1,0 +1,73 @@
+---
+import {
+  SITE_DESCRIPTION,
+  SITE_IMAGE,
+  SITE_IMAGE_ALT,
+  SITE_TITLE,
+} from "@/config/consts";
+
+export interface Props {
+  title?: string;
+  description?: string;
+  imageURL?: string;
+  imageAlt?: string;
+  type?: "website" | "article";
+  canonicalURL?: string;
+  noindex?: boolean;
+}
+
+const {
+  title = SITE_TITLE,
+  description,
+  imageURL = SITE_IMAGE,
+  imageAlt = SITE_IMAGE_ALT,
+  type = "website",
+  canonicalURL,
+  noindex = false,
+} = Astro.props;
+
+if (!Astro.site) {
+  throw new Error("Astro.site precisa estar definido no astro.config.mjs.");
+}
+
+const titleFormatted =
+  title === SITE_TITLE ? SITE_TITLE : `${title} - ${SITE_TITLE}`;
+
+const descriptionFormatted = description?.trim() || SITE_DESCRIPTION;
+
+const canonicalFormatted = canonicalURL
+  ? new URL(canonicalURL, Astro.site).toString()
+  : new URL(Astro.url.pathname, Astro.site).toString();
+
+const imageFormatted = new URL(imageURL, Astro.site).toString();
+
+const robots = noindex ? "noindex, nofollow" : "index, follow";
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+<link rel="icon" type="image/png" href="/favicon.png" />
+<link rel="canonical" href={canonicalFormatted} />
+<meta name="generator" content={Astro.generator} />
+<meta name="robots" content={robots} />
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<title>{titleFormatted}</title>
+<meta name="description" content={descriptionFormatted} />
+
+<meta property="og:type" content={type} />
+<meta property="og:locale" content="pt_BR" />
+<meta property="og:url" content={canonicalFormatted} />
+<meta property="og:title" content={titleFormatted} />
+<meta property="og:description" content={descriptionFormatted} />
+<meta property="og:image" content={imageFormatted} />
+<meta property="og:image:alt" content={imageAlt} />
+<meta property="og:site_name" content={SITE_TITLE} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={canonicalFormatted} />
+<meta name="twitter:title" content={titleFormatted} />
+<meta name="twitter:description" content={descriptionFormatted} />
+<meta name="twitter:image" content={imageFormatted} />
+<meta name="twitter:image:alt" content={imageAlt} />

@@ -1,0 +1,13 @@
+---
+import PostListingPage from "@/components/blog/PostListingPage.astro";
+import { getPublishedPosts } from "@/utils/blog";
+
+const posts = await getPublishedPosts();
+---
+
+<PostListingPage
+  title="Blog"
+  description="Posts publicados pelo CMS."
+  heading="Blog"
+  posts={posts}
+/>

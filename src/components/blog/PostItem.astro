@@ -1,0 +1,64 @@
+---
+import FormattedDate from "@/components/blog/FormattedDate.astro";
+import placeholder from "@/assets/post-placeholder.png";
+import { Image } from "astro:assets";
+import { getBlogPostData, type BlogPost } from "@/utils/blog";
+import Tags from "@/components/blog/Tags.astro";
+
+interface Props {
+  post: BlogPost;
+  activeTag?: string;
+}
+
+const { post, activeTag } = Astro.props;
+
+const {
+  title,
+  slug,
+  createdTime,
+  cover,
+  coverAlt = title,
+  tags,
+} = getBlogPostData(post);
+
+const displayCover = cover ?? placeholder;
+---
+
+<article class="overflow-hidden rounded-lg border border-zinc-200 bg-white">
+  <a href={"/blog/" + slug} data-astro-prefetch="hover" class="block">
+    {
+      displayCover && (
+        <div class="overflow-hidden border-b border-zinc-200 relative">
+          <Image
+            widths={[320, 480, 720, 960, 1200]}
+            sizes="(min-width: 1400px) 590px, (min-width: 768px) calc(42.857vw - 10px), 85.714vw"
+            src={displayCover}
+            alt={coverAlt}
+            decoding="async"
+            loading="lazy"
+            format="webp"
+            class="h-full w-full aspect-video object-center object-cover"
+          />
+          <Tags
+            tags={tags}
+            class="justify-end absolute m-4 top-0 right-0 z-50"
+            activeTag={activeTag}
+          />
+        </div>
+      )
+    }
+  </a>
+
+  <div class="space-y-1 p-5">
+    <a href={"/blog/" + slug} data-astro-prefetch="hover" class="block">
+      <h2 class="text-xl hover:text-zinc-600">{title}</h2>
+    </a>
+    {
+      createdTime && (
+        <p class="text-sm text-zinc-500">
+          <FormattedDate date={createdTime} />
+        </p>
+      )
+    }
+  </div>
+</article>

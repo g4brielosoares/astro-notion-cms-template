@@ -1,0 +1,25 @@
+---
+import type { BlogPost } from "@/utils/blog";
+import Layout from "@/layouts/Layout.astro";
+import Container from "@/components/layout/Container.astro";
+import PostGrid from "@/components/blog/PostGrid.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  heading?: string;
+  intro?: string;
+  posts: BlogPost[];
+  activeTag?: string;
+}
+
+const { title, description, heading = title, intro, posts, activeTag } = Astro.props;
+---
+
+<Layout {title} {description}>
+  <Container class="space-y-6 py-16 md:py-20">
+    <h1>{heading}</h1>
+    {intro && <p class="max-w-3xl text-zinc-600">{intro}</p>}
+    <PostGrid posts={posts} activeTag={activeTag} />
+  </Container>
+</Layout>

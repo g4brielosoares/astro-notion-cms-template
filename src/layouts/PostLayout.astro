@@ -1,0 +1,155 @@
+---
+import "@/styles/post.css";
+
+import Layout from "./Layout.astro";
+import FormattedDate from "@/components/blog/FormattedDate.astro";
+import Container from "@/components/layout/Container.astro";
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import placeholder from "@/assets/post-placeholder.png";
+import Tags from "@/components/blog/Tags.astro";
+
+export type Props = {
+  title: string;
+  slug: string;
+  description?: string;
+  createdTime: Date;
+  lastEditedTime?: Date;
+  cover?: ImageMetadata | null;
+  author?: string;
+  tags?: string[];
+  coverAlt?: string;
+};
+
+const {
+  title,
+  createdTime,
+  description,
+  lastEditedTime,
+  cover,
+  coverAlt = title,
+  author,
+  tags = [],
+} = Astro.props;
+
+const displayCover = cover ?? placeholder;
+---
+
+<Layout {title} {description} type="article">
+  <article class="py-16 md:py-20 space-y-6">
+    <Container class="max-w-5xl">
+      <figure class="space-y-4">
+        {
+          displayCover && (
+            <Image
+              widths={[640, 768, 1024, 1280]}
+              sizes="(min-width: 1280px) 1280px, 100vw"
+              src={displayCover}
+              alt={coverAlt}
+              decoding="async"
+              loading="eager"
+              fetchpriority="high"
+              format="webp"
+              class="aspect-video w-full rounded-lg object-cover object-center"
+            />
+          )
+        }
+        <figcaption
+          class="flex flex-col gap-1 text-sm text-zinc-500 md:flex-row md:justify-between"
+        >
+          <div class="space-y-1 md:space-y-0">
+            {
+              createdTime && (
+                <div>
+                  Criado em <FormattedDate date={createdTime} />
+                </div>
+              )
+            }
+            {
+              lastEditedTime &&
+                lastEditedTime.getDate() !== createdTime.getDate() && (
+                  <div>
+                    Atualizado em <FormattedDate date={lastEditedTime} />
+                  </div>
+                )
+            }
+          </div>
+          {author && <span>Por {author}</span>}
+        </figcaption>
+      </figure>
+    </Container>
+    <Container class="flex flex-col items-center space-y-6">
+      <h1 class="w-full max-w-3xl wrap-break-word text-center">{title}</h1>
+      <Tags tags={tags} class="justify-center" />
+      <div class="post-content js-post-content">
+        <slot />
+      </div>
+    </Container>
+  </article>
+</Layout>
+
+<script is:inline>
+  const copyIcon = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true">
+      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+        <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+      </g>
+    </svg>
+  `;
+
+  const checkIcon = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 6L9 17l-5-5"></path>
+    </svg>
+  `;
+
+  function setupMarkdownCopyButtons() {
+    const contentRoot = document.querySelector(".js-post-content");
+
+    if (!contentRoot) return;
+
+    const codeBlocks = contentRoot.querySelectorAll("pre");
+
+    codeBlocks.forEach((pre) => {
+      if (pre.parentElement?.classList.contains("md-code-block")) return;
+
+      const code = pre.querySelector("code");
+      const textToCopy = code?.textContent?.trimEnd();
+
+      if (!textToCopy) return;
+
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "md-copy-button";
+      button.setAttribute("aria-label", "Copiar código");
+      button.innerHTML = copyIcon;
+
+      button.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(textToCopy);
+          button.innerHTML = checkIcon;
+          button.setAttribute("aria-label", "Código copiado");
+
+          window.setTimeout(() => {
+            button.innerHTML = copyIcon;
+            button.setAttribute("aria-label", "Copiar código");
+          }, 2000);
+        } catch {
+          button.innerHTML = copyIcon;
+          button.setAttribute("aria-label", "Falha ao copiar código");
+        }
+      });
+
+      const wrapper = document.createElement("div");
+      wrapper.className = "md-code-block";
+
+      pre.parentNode?.insertBefore(wrapper, pre);
+      wrapper.appendChild(pre);
+      wrapper.appendChild(button);
+    });
+  }
+
+  setupMarkdownCopyButtons();
+  document.addEventListener("astro:page-load", setupMarkdownCopyButtons);
+</script>

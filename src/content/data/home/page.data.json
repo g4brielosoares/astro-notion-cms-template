@@ -1,0 +1,29 @@
+{
+  "hero": {
+    "eyebrow": "Astro + Notion CMS",
+    "title": "Um template simples para publicar conteúdo com Astro.",
+    "description": "Use esta base como ponto de partida para sites pequenos, blogs e documentações alimentados pelo Notion.",
+    "primaryLink": {
+      "label": "Ver posts",
+      "href": "/blog"
+    },
+    "secondaryLink": {
+      "label": "Configurar conteúdo",
+      "href": "https://docs.astro.build/en/guides/content-collections/"
+    }
+  },
+  "features": [
+    {
+      "title": "Estrutura pequena",
+      "description": "Páginas, layouts, estilos e helpers ficam separados, mas sem camadas desnecessárias."
+    },
+    {
+      "title": "Tailwind direto",
+      "description": "Classes utilitárias simples para que você consiga trocar o visual rapidamente."
+    },
+    {
+      "title": "Notion como fonte",
+      "description": "O pacote local continua disponível para sincronizar páginas do Notion para o Astro Content."
+    }
+  ]
+}
